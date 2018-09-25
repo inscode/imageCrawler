@@ -21,9 +21,9 @@ class Demo
     public function __construct()
     {
         //七牛云access_key
-        $this->access_key = '七牛云access_key';
+        $this->access_key = '';
         //七牛云secret_key
-        $this->secret_key = '七牛云secret_key';
+        $this->secret_key = '';
         //七牛云存储空间
         $this->bucket = 'inscode';
     }
@@ -59,7 +59,7 @@ class Demo
                 $imgItem = $imgItem['img3'];
             }
             $this->singleImgHandler($imgItem, $host, $orderNum);
-            sleep(1);
+            sleep(2);
             $orderNum++;
         }
     }
@@ -78,7 +78,7 @@ class Demo
         $imgUrl .= $parseInfo['host'];
         $imgUrl .= $parseInfo['path'];
 
-        if ($imgSize = getimagesize($imgUrl)) {
+        if ($imgSize = @getimagesize($imgUrl)) {
             //小图片过滤
             if ($imgSize[0] >= 320 && $imgSize[1] >= 320) {
                 //保存到七牛的文件名
@@ -96,17 +96,17 @@ class Demo
                 $mime = 'image/jpeg';
                 list($rest, $err) = $up->put($token, $key, $imgData, null, $mime);
                 if ($err) {
-                    file_put_contents("err.log", $imgUrl);
+                    file_put_contents("err.log", $imgUrl,FILE_APPEND);
                 } else {
                     echo $imgUrl . ' save success' . PHP_EOL;
                 }
             } else {
-                echo $imgUrl . "too small" . PHP_EOL;
-                file_put_contents("size.log", $imgUrl . PHP_EOL);
+                echo $imgUrl . " too small" . PHP_EOL;
+                file_put_contents("size.log", $imgUrl . PHP_EOL, FILE_APPEND);
             }
         } else {
             echo "getImageSize failed" . PHP_EOL;
-            file_put_contents("getImageSize.log", $imgUrl . PHP_EOL);
+            file_put_contents("getImageSize.log", $imgUrl . PHP_EOL, FILE_APPEND);
         }
     }
 
@@ -135,5 +135,5 @@ class Demo
 $upTest = new Demo();
 
 //填写需要爬取的url地址
-$url = '';
-$upTest->main();
+$url = 'http://www.tuniu.com/trips/30165594';
+$upTest->main($url);
