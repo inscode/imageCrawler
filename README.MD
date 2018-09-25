@@ -1,3 +1,36 @@
+#### Demo 名称：网页攻略爬虫
+
+**[Github](https://github.com/inscode/imageCrawler.git)**
+
+#### 实现的功能
+
+- 爬取旅游网站攻略|游记页面的图片保存到本地
+- 爬取的图片同步存储到七牛云☁️☁️☁️
+
+#### 项目依赖
+
+- [QueryList：简单、 灵活、强大的PHP采集工具](https://www.querylist.cc/)
+```
+composer require jaeger/querylist
+```
+- [七牛云SDK PHP官方版](https://developer.qiniu.com/kodo/sdk/1241/php)
+```
+composer require qiniu/php-sdk
+```
+
+#### 项目使用
+
+- ```git clone https://github.com/inscode/imageCrawler.git```
+
+- 切换到 ```imageCrawler``` 目录下， 在```index.php``` 中配置需要爬取的 url 地址
+
+- 在 terminal  中执行 ```php index.php```
+
+- ```emmmm... that's all```
+
+#### 代码片段: index.php
+
+```php
 <?php
 /**
  * Created by PhpStorm.
@@ -109,27 +142,6 @@ class Demo
             file_put_contents("getImageSize.log", $imgUrl . PHP_EOL);
         }
     }
-
-    /**
-     * 读取远程图片
-     * @param $$imgUrl
-     * @return mixed
-     */
-    protected function getImgData($imgUrl)
-    {
-        $ch = curl_init($imgUrl);
-
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
-
-        //读取图片信息
-        $rawData = curl_exec($ch);
-        curl_close($ch);
-
-        return $rawData;
-    }
 }
 
 $upTest = new Demo();
@@ -137,3 +149,4 @@ $upTest = new Demo();
 //填写需要爬取的url地址
 $url = '';
 $upTest->main();
+```
