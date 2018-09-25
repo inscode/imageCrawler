@@ -59,7 +59,7 @@ class Demo
                 $imgItem = $imgItem['img3'];
             }
             $this->singleImgHandler($imgItem, $host, $orderNum);
-            sleep(2);
+            sleep(1);
             $orderNum++;
         }
     }
@@ -96,16 +96,16 @@ class Demo
                 $mime = 'image/jpeg';
                 list($rest, $err) = $up->put($token, $key, $imgData, null, $mime);
                 if ($err) {
-                    file_put_contents("err.log", $imgUrl,FILE_APPEND);
+                    file_put_contents("err.log", $imgUrl, FILE_APPEND);
                 } else {
-                    echo $imgUrl . ' save success' . PHP_EOL;
+                    echo $orderNum . ': ' . $imgUrl . ' save success ' . PHP_EOL;
                 }
             } else {
-                echo $imgUrl . " too small" . PHP_EOL;
+                echo $orderNum . ': ' . $imgUrl . " too small " . PHP_EOL;
                 file_put_contents("size.log", $imgUrl . PHP_EOL, FILE_APPEND);
             }
         } else {
-            echo "getImageSize failed" . PHP_EOL;
+            echo $orderNum . ': ' . $imgUrl . " getImageSize failed " . PHP_EOL;
             file_put_contents("getImageSize.log", $imgUrl . PHP_EOL, FILE_APPEND);
         }
     }
