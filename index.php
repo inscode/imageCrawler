@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set("PRC");
 /**
  * Created by PhpStorm.
  * User: inscode
@@ -32,7 +33,7 @@ class Demo
      * 主方法
      *
      * */
-    public function main($url = 'http://you.ctrip.com/article/detail/1080877.html')
+    public function main($url)
     {
         //todo 这是改为动态获取
         $this->getCrawlerPics($url);
@@ -49,6 +50,10 @@ class Demo
             'img3' => array('img', 'src'),
         ];
         $data = QueryList::html($content)->rules($rules)->query()->getData();
+
+        echo '<pre>';
+        print_r($data); exit;
+
         foreach ($data as $imgItem) {
             static $orderNum = 1;
             if ($imgItem['img1']) {
@@ -59,9 +64,11 @@ class Demo
                 $imgItem = $imgItem['img3'];
             }
             $this->singleImgHandler($imgItem, $host, $orderNum);
-            sleep(1);
+            //sleep(0.1);
             $orderNum++;
         }
+
+        echo PHP_EOL . "-:) finish (:- ".PHP_EOL;
     }
 
     private function singleImgHandler($imgInfo, $host, $orderNum)
@@ -135,5 +142,7 @@ class Demo
 $upTest = new Demo();
 
 //填写需要爬取的url地址
-$url = 'http://www.tuniu.com/trips/30165594';
+$url = 'http://www.tuniu.com/trips/30165594';    //途牛
+$url = 'http://you.ctrip.com/travels/innermongolia100062/3724620.html';  //携程
+$url = 'https://www.mafengwo.cn/gonglve/ziyouxing/41734.html?cid=1010616';  //马蜂窝
 $upTest->main($url);
