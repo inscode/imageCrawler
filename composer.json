@@ -1,0 +1,6 @@
+{
+    "require": {
+        "jaeger/querylist": "^4.0",
+        "qiniu/php-sdk": "^7.2"
+    }
+}
