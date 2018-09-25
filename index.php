@@ -1,4 +1,10 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: inscode
+ * Date: 2018/9/24
+ * Time: 14:48
+ */
 require './vendor/autoload.php';
 
 use QL\QueryList;
@@ -28,6 +34,7 @@ class Demo
      * */
     public function inscode()
     {
+        //todo 这是改为动态获取
         $url = "http://you.ctrip.com/article/detail/1080877.html";
         $this->getCrawlerPics($url);
     }
