@@ -1,4 +1,4 @@
-#### Demo 名称：网页攻略爬虫
+#### Demo 名称：攻略|游记图片爬虫
 
 **[Github](https://github.com/inscode/imageCrawler.git)**
 
