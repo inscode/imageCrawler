@@ -51,9 +51,6 @@ class Demo
         ];
         $data = QueryList::html($content)->rules($rules)->query()->getData();
 
-        echo '<pre>';
-        print_r($data); exit;
-
         foreach ($data as $imgItem) {
             static $orderNum = 1;
             if ($imgItem['img1']) {
@@ -119,7 +116,7 @@ class Demo
 
     /**
      * 读取远程图片
-     * @param $$imgUrl
+     * @param $imgUrl
      * @return mixed
      */
     protected function getImgData($imgUrl)
