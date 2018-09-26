@@ -32,6 +32,7 @@ composer require qiniu/php-sdk
 
 ```php
 <?php
+date_default_timezone_set("PRC");
 /**
  * Created by PhpStorm.
  * User: inscode
@@ -54,9 +55,9 @@ class Demo
     public function __construct()
     {
         //七牛云access_key
-        $this->access_key = '七牛云access_key';
+        $this->access_key = '';
         //七牛云secret_key
-        $this->secret_key = '七牛云secret_key';
+        $this->secret_key = '';
         //七牛云存储空间
         $this->bucket = 'inscode';
     }
@@ -65,7 +66,7 @@ class Demo
      * 主方法
      *
      * */
-    public function main($url = 'http://you.ctrip.com/article/detail/1080877.html')
+    public function main($url)
     {
         //todo 这是改为动态获取
         $this->getCrawlerPics($url);
@@ -82,6 +83,7 @@ class Demo
             'img3' => array('img', 'src'),
         ];
         $data = QueryList::html($content)->rules($rules)->query()->getData();
+
         foreach ($data as $imgItem) {
             static $orderNum = 1;
             if ($imgItem['img1']) {
@@ -92,9 +94,11 @@ class Demo
                 $imgItem = $imgItem['img3'];
             }
             $this->singleImgHandler($imgItem, $host, $orderNum);
-            sleep(1);
+            //sleep(0.1);
             $orderNum++;
         }
+
+        echo PHP_EOL . "-:) finish (:- ".PHP_EOL;
     }
 
     private function singleImgHandler($imgInfo, $host, $orderNum)
@@ -111,7 +115,7 @@ class Demo
         $imgUrl .= $parseInfo['host'];
         $imgUrl .= $parseInfo['path'];
 
-        if ($imgSize = getimagesize($imgUrl)) {
+        if ($imgSize = @getimagesize($imgUrl)) {
             //小图片过滤
             if ($imgSize[0] >= 320 && $imgSize[1] >= 320) {
                 //保存到七牛的文件名
@@ -129,24 +133,47 @@ class Demo
                 $mime = 'image/jpeg';
                 list($rest, $err) = $up->put($token, $key, $imgData, null, $mime);
                 if ($err) {
-                    file_put_contents("err.log", $imgUrl);
+                    file_put_contents("err.log", $imgUrl, FILE_APPEND);
                 } else {
-                    echo $imgUrl . ' save success' . PHP_EOL;
+                    echo $orderNum . ': ' . $imgUrl . ' save success ' . PHP_EOL;
                 }
             } else {
-                echo $imgUrl . "too small" . PHP_EOL;
-                file_put_contents("size.log", $imgUrl . PHP_EOL);
+                echo $orderNum . ': ' . $imgUrl . " too small " . PHP_EOL;
+                file_put_contents("size.log", $imgUrl . PHP_EOL, FILE_APPEND);
             }
         } else {
-            echo "getImageSize failed" . PHP_EOL;
-            file_put_contents("getImageSize.log", $imgUrl . PHP_EOL);
+            echo $orderNum . ': ' . $imgUrl . " getImageSize failed " . PHP_EOL;
+            file_put_contents("getImageSize.log", $imgUrl . PHP_EOL, FILE_APPEND);
         }
+    }
+
+    /**
+     * 读取远程图片
+     * @param $imgUrl
+     * @return mixed
+     */
+    protected function getImgData($imgUrl)
+    {
+        $ch = curl_init($imgUrl);
+
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
+
+        //读取图片信息
+        $rawData = curl_exec($ch);
+        curl_close($ch);
+
+        return $rawData;
     }
 }
 
 $upTest = new Demo();
 
 //填写需要爬取的url地址
-$url = '';
-$upTest->main();
+$url = 'http://www.tuniu.com/trips/30165594';    //途牛
+$url = 'http://you.ctrip.com/travels/innermongolia100062/3724620.html';  //携程
+$url = 'https://www.mafengwo.cn/gonglve/ziyouxing/41734.html?cid=1010616';  //马蜂窝
+$upTest->main($url);
 ```
